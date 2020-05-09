@@ -1,0 +1,188 @@
+<html ng-app="app">
+
+<head>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <!------ Include the above in your HEAD tag ---------->
+    <script type="text/javascript">
+        async function fetchAsync (url, id) {
+            let response = await fetch(url);
+            let data = await response.json();
+            var select = document.getElementById(id);
+            while (select.options.length) select.remove(0);
+            var all = document.createElement("option");
+            all.textContent = "ALL";
+            all.value = "ALL";
+            select.appendChild(all);
+            data.ID.forEach(function(elem) {
+                var opt = elem;
+                var el = document.createElement("option");
+                el.textContent = opt;
+                el.value = opt;
+                select.appendChild(el);
+            });
+        }
+        async function fetchAsyncDeploy (url, id) {
+            let response = await fetch(url);
+            let data = await response.json();
+            updateMeter(data)
+        }
+        window.onload = function load() {
+            console.log("on load!!!");
+            fetchAsync("http://localhost:8080/list/ns", "namespace");
+        };
+
+        function getDeployments() {
+            var e = document.getElementById("namespace");
+            var ns = e.options[e.selectedIndex].value;
+            fetchAsync("http://localhost:8080/list/dep/"+ns, "deployment");
+        }
+
+        function getDeployment() {
+            var e = document.getElementById("namespace");
+            var ns = e.options[e.selectedIndex].value;
+
+            var el = document.getElementById("deployment");
+            var dep = el.options[el.selectedIndex].value;
+            fetchAsyncDeploy("http://localhost:8080/dep/"+ns+"/"+dep);
+        }
+
+        var myWebSocket;
+
+        function updateMeter(event){
+            var avg =  (parseInt(JSON.parse(event.data).ReplicaCurrent)/parseInt(JSON.parse(event.data).ReplicaDesired))*100;
+            var color = "";
+            if( avg > 10 ){
+                color = "oragne";
+            }else if (avg > 90){
+                color = "green"
+            }
+            document.getElementById('meter1').className = 'c100 p'+Math.round(avg)+' big ' + color;
+            document.getElementById("deploy_name").innerHTML = JSON.parse(event.data).Name;
+            document.getElementById("replicas").innerHTML = JSON.parse(event.data).ReplicaCurrent + "\\" + JSON.parse(event.data).ReplicaDesired;
+
+            JSON.parse(event.data).Containers.forEach(function(con) {
+                document.getElementById("container_name").innerHTML = con.Name;
+                document.getElementById("container_image").innerHTML = con.Image;
+            });
+        }
+
+        function connectToWS() {
+            var endpoint = document.getElementById("endpoint").value;
+            if (myWebSocket !== undefined) {
+                myWebSocket.close()
+            }
+
+            myWebSocket = new WebSocket(endpoint);
+
+            myWebSocket.onmessage = function(event) {
+                var e = document.getElementById("deployment");
+                var selectedDeployment = e.options[e.selectedIndex].value;
+                if (selectedDeployment === "ALL"){
+                    updateMeter(event);
+                } else if (selectedDeployment === JSON.parse(event.data).Name) {
+                    updateMeter(event);
+                }
+
+            };
+
+            myWebSocket.onclose = function(evt) {
+                console.log("onclose.");
+                myWebSocket = new WebSocket(endpoint);
+            };
+
+            myWebSocket.onopen = function(evt) {
+                console.log("onopen.");
+            };
+
+            myWebSocket.onerror = function(evt) {
+                console.log("Error!");
+            };
+        }
+
+        function closeConn() {
+            myWebSocket.close();
+        }
+
+    </script>
+    <!-- styles for this little demo page -->
+    <style type="text/css">
+
+        body{
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+        }
+
+        .page {
+            margin: 40px;
+        }
+
+        h1{
+            margin: 40px 0 60px 0;
+        }
+
+        .dark-area {
+            background-color: #666;
+            padding: 40px;
+            margin: 0 -40px 20px -40px;
+            clear: both;
+        }
+
+        .clearfix:before,.clearfix:after {content: " "; display: table;}
+        .clearfix:after {clear: both;}
+        .clearfix {*zoom: 1;}
+
+    </style>
+
+    <link rel="stylesheet" href="static/circle.css">
+</head>
+<body>
+
+<label for="namespace">namespace:</label>
+<select id="namespace" onchange="if (this.selectedIndex) getDeployments();">
+    <option value="ALL">ALL</option>
+</select>
+<br><br>
+<label for="namespace">deployments:</label>
+<select id="deployment" onchange="if (this.selectedIndex) getDeployment();">
+    <option value="ALL">ALL</option>
+</select>
+<br><br>
+<form>
+    connection to: <input type="text" id="endpoint" name="endpoint" value="ws://localhost:8080/ws"  style="width: 200px" ><br>
+</form>
+
+<input type="button" onclick="connectToWS()" value="connect to WebSocket endpoint" /><br><br>
+
+<input type="button" onclick="closeConn()" value="Close connection" />
+
+</body>
+<body>
+
+<div class="page">
+    <!-- default -->
+    <div id="mainMeter" class="clearfix">
+        <div id="meter1" class="c100 p0 big">
+            <span id="replicas">N/A</span>
+            <div class="slice">
+                <div class="bar"></div>
+                <div class="fill"></div>
+            </div>
+        </div>
+        <div class="deployment">
+            Deployment: <span id="deploy_name">N/A</span>
+        </div>
+        <div class="containers" data-type="containers">
+            Containers: <span id="container_name">N/A</span>
+                        <span id="container_image">N/A</span>
+        </div>
+    </div>
+    <!-- /default -->
+</div>
+
+</body>
+</html>
+
