@@ -1,3 +1,3 @@
 # teleskope
 
-<img src="fteleskope-gif.gif"/>
+<img src="teleskope-gif.gif"/>
