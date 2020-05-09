@@ -23,7 +23,6 @@
                 select.appendChild(el);
             });
         }
-
         async function fetchAsyncDeploy (url) {
             let response = await fetch(url);
             let data = await response;
@@ -138,7 +137,7 @@
 </body>
 <body>
 
-<div class="page center" id="main">
+<div class="page center">
 
     <template id="template">
         <div id="mainMeter" class="clearfix center">
@@ -158,15 +157,15 @@
             Containers: <span id="container_name">N/A</span>
             <span id="container_image">N/A</span>
         </div>
-    </template>
+    </template>`
 
     <!-- default -->
     <div id="mainMeter" class="clearfix center">
-        <div id="meter1" class="c100 p0 big ">
+        <div id="meter1" class="c100 p0 big">
             <span id="replicas">N/A</span>
-            <div class="slice ">
-                <div class="bar "></div>
-                <div class="fill "></div>
+            <div class="slice">
+                <div class="bar"></div>
+                <div class="fill"></div>
             </div>
         </div>
         <br><br>

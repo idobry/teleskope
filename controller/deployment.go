@@ -14,6 +14,7 @@ import (
 type Container struct{
 	Name string
 	Image string
+	Envs []string
 }
 
 type deployments struct {
@@ -37,7 +38,6 @@ func GetDeployment(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 	hub.broadcast <- getDeployEvent(newDepl)
-	//_, _ = w.Write(getDeployEvent(newDepl))
 	return
 }
 
@@ -53,7 +53,6 @@ func GetDeployments(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		[]string{},
 	}
 	for _, dep := range deploymetns.Items{
-		fmt.Println(dep.Name)
 		depList.ID = append(depList.ID, dep.Name)
 	}
 	b, err := json.Marshal(depList)
@@ -79,22 +78,6 @@ func StreamDeployments(h *Hub) {
 		UpdateFunc: func(old, new interface{}) {
 			newDepl := new.(*appsv1.Deployment)
 			fmt.Printf("deploymet %s changed\n", newDepl.Name)
-			/*deploy := DeploymentEvent{
-				Name: newDepl.Name,
-				Namespace: newDepl.Namespace,
-				ReplicaCurrent: fmt.Sprintf("%d", newDepl.Status.AvailableReplicas),
-				ReplicaDesired: fmt.Sprintf("%d", newDepl.Status.Replicas),
-				Containers: []Container{},
-			}
-			for _ ,c := range newDepl.Spec.Template.Spec.Containers{
-				deploy.Containers = append(deploy.Containers, Container{c.Name,c.Image})
-			}
-
-			b, err := json.Marshal(deploy)
-			if err != nil {
-				fmt.Println(err)
-				return
-			}*/
 
 			h.broadcast <- getDeployEvent(newDepl)
 
@@ -115,7 +98,14 @@ func getDeployEvent(newDepl *appsv1.Deployment) []byte{
 		Containers: []Container{},
 	}
 	for _ ,c := range newDepl.Spec.Template.Spec.Containers{
-		deploy.Containers = append(deploy.Containers, Container{c.Name,c.Image})
+		var con = Container{}
+		con.Name = c.Name
+		con.Image = c.Image
+		con.Envs = []string{}
+		for _, env := range c.Env{
+			con.Envs = append(con.Envs, env.Name+":"+env.Value)
+		}
+		deploy.Containers = append(deploy.Containers, con)
 	}
 
 	b, err := json.Marshal(deploy)
