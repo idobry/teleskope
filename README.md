@@ -2,7 +2,7 @@
 
 <img src="teleskope-gif.gif"/>
 
-'''go
+```go
 	r.HandleFunc("/list/ns", func(w http.ResponseWriter, r *http.Request) {
 		controller.GetNamespaces(h, w, r)
 	})
@@ -15,4 +15,4 @@
 	r.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		controller.StreamUpdateds(h, w, r)
 	})
-'''
+```
