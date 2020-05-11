@@ -24,7 +24,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 
-	"github.com/idob/deploymentStatus/controller"
+	"github.com/idob/teleskope/controller"
 )
 
 // runCmd represents the run command

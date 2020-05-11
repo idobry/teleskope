@@ -2,12 +2,10 @@ package controller
 
 import (
 	"os"
-
+	"log"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
-
-	"github.com/idob/deploymentStatus/internal"
 )
 
 func GetKubeClient() *kubernetes.Clientset{
@@ -17,14 +15,14 @@ func GetKubeClient() *kubernetes.Clientset{
 	home := homeDir()
 	if err != nil && home != "" {
 		cfg, err = clientcmd.BuildConfigFromFlags("", home+"/.kube/config")
-		internal.ExitOnErr(err)
+		ExitOnErr(err)
 	} else {
 		cfg, err = clientcmd.BuildConfigFromFlags("", "")
-		internal.ExitOnErr(err)
+		ExitOnErr(err)
 	}
 
 	kubeclient, err := kubernetes.NewForConfig(cfg)
-	internal.ExitOnErr(err)
+	ExitOnErr(err)
 
 	return kubeclient
 }
@@ -34,4 +32,10 @@ func homeDir() string {
 		return h
 	}
 	return os.Getenv("USERPROFILE") // windows
+}
+
+func ExitOnErr(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
 }
