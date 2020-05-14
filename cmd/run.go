@@ -19,12 +19,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 
-	"github.com/idob/teleskope/controller"
+	"github.com/idobry/teleskope/controller"
 )
 
 // runCmd represents the run command
@@ -63,7 +64,7 @@ func serve() {
 		controller.StreamUpdateds(h, w, r)
 	})
 	fmt.Println("ListenAndServe...")
-	err := http.ListenAndServe(":8080", handlers.CORS(corsObj)(r))
+	err := http.ListenAndServe(":" + os.Getenv("PORT"), handlers.CORS(corsObj)(r))
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
