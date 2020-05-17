@@ -13,6 +13,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.8.1",
     "@fortawesome/vue-fontawesome": "^0.1.6",
     "animate-sass": "^0.8.2",
+    "axios": "^0.19.2",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.18",
     "chart.js": "^2.8.0",
