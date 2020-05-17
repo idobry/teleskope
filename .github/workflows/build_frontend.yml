@@ -1,0 +1,16 @@
+
+name: Publish Teleskope frontend
+on: [push]
+jobs:
+  build-amd64:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Publish to Registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: efrat19/teleskope-frontend
+          username: efrat19
+          password: ${{ secrets.EFRAT19_DOCKER_PASSWORD }}
+          tags: "latest,amd64-${{ github.sha }}"
+          context: frontend
