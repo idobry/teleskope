@@ -21,6 +21,8 @@
                         </div>
                     </div>
                 </div>
+
+        <div class="divider mt-0" style="margin-bottom: 17px;"></div>
                 <div class="card mb-3 widget-content">
                     <div class="widget-content-wrapper">
                         <div class="widget-content-left">
@@ -31,8 +33,8 @@
                         </div>
                     </div>
                 </div>
-                <hr>
 
+        <div class="divider mt-0" style="margin-bottom: 17px;"></div>
                 <div class="card mb-3 widget-content">
                     <div class="widget-content-wrapper">
                         <div class="widget-content-left">
@@ -43,6 +45,7 @@
                         </div>
                     </div>
                 </div>
+                <div class="divider mt-0" style="margin-bottom: 17px;"></div>
                   <div class="card mb-3 widget-content">
                     <div class="widget-content-wrapper">
                         <div class="widget-content-left">
@@ -114,11 +117,11 @@
       icon: 'pe-7s-helm icon-gradient bg-amy-crisp',
     }),
     async mounted() {
-        this.connectToWS();
+        this.apiService.connectToWebSocket(this.onmessage);
         await this.setInitialFeed();
       },
     beforeDestroyed() {
-        this.closeConn();
+        this.apiService.disconnectFromWebSocket();
       },
     computed: {
     },
@@ -174,39 +177,10 @@
           this.age = this.getAge(container)
           this.subheading = this.getSubheading(container)
           this.envVars = this.getEnvVars(container)
-
       },
-      connectToWS() {
-            const wsURL = process.env.VUE_APP_WS_URL || 'ws://localhost:3000/ws';
-            const endpoint = `${wsURL}?namespace=${this.$route.params.namespace}&deployment=${this.$route.params.deployment}`;
-            if (this.ws !== null) {
-                this.ws.close()
-            }
-
-            this.ws = new WebSocket(endpoint);
-
-            this.ws.onmessage = event =>  {
-                console.log("ommessage.");
-                const message = JSON.parse(event.data);
-                this.updateFeed(message)
-            };
-
-            this.ws.onclose = function(evt) {
-              console.log("onclose.");
-                this.ws = new WebSocket(endpoint);
-            };
-
-            this.ws.onopen = function(evt) {
-              console.log("onopen.");
-            };
-
-            this.ws.onerror = function(evt) {
-                console.log("Error!");
-            };
+      onmessage(message) {
+          message.Name === this.$route.params.deployment && this.updateFeed(message)
       },
-      closeConn() {
-          this.ws.close();
-      }
     }
 }
 </script>

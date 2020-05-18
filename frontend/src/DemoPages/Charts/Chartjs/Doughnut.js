@@ -15,20 +15,20 @@ export default {
   },
   methods: {
 render(chartValues) {
-  // console.log('rendering....')
   this.renderChart({
     labels: Object.keys(chartValues),
     datasets: [{
       data: Object.values(chartValues),
       backgroundColor: [
         '#8dace7',
-        '#71deb9',
-        '#ef869e'
+        '#eeeeee',
+        // '#ef869e'
       ],
       hoverBackgroundColor: [
         '#7097e1',
-        '#4dd6a7',
-        '#eb6886'
+        '#eeeeee',
+        // '#4dd6a7',
+        // '#eb6886'
       ]
     }]
 },{responsive: true, maintainAspectRatio: false,animation:false, legend: false})
