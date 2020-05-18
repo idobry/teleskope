@@ -3,9 +3,9 @@ import axios from 'axios'
 export default class ApiService {
     
     constructor(){
-        // this.apiBaseURL = process.env['VUE_APP_API_BASE_URL'] || 'http://localhost:3000' 
+        this.apiBaseURL = process.env['VUE_APP_API_BASE_URL'] || 'http://localhost:3000' 
         this.axios = axios.create({
-            // baseURL: this.apiBaseURL,
+            baseURL: this.apiBaseURL,
             /* other custom settings */
         });
         this.webSocket = null;
