@@ -32,13 +32,21 @@ type DeploymentEvent struct{
 
 func GetDeployment(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("Inside GetDeployment func\n")
-	fmt.Printf("dep %s \n", mux.Vars(r)["dep"])
+	vars := mux.Vars(r)
+	ns := vars["ns"]
+	dep := vars["dep"]
+	fmt.Printf("dep %s in $s \n", dep, ns)
 	kubeclient := GetKubeClient()
 	newDepl, err := kubeclient.AppsV1().Deployments(mux.Vars(r)["ns"]).Get(mux.Vars(r)["dep"],metav1.GetOptions{})
 	if err != nil{
 		panic(err)
 	}
-	hub.broadcast <- getDeployEvent(newDepl)
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+	_, err = w.Write(getDeployEvent(newDepl))
+	if err != nil{
+		panic(err)
+	}
 	return
 }
 
