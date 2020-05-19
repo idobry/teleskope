@@ -14,6 +14,6 @@ jobs:
           username: ${{ secrets.IDO_DOCKER_USERNAME }}
           password: ${{ secrets.IDO_DOCKER_PASSWORD }}
           repository: idobry/teleskope_backend
-          path: ./backend
+          path: backend
           tag_with_ref: true
           tag_with_sha: true
