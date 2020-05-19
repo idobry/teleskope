@@ -8,7 +8,7 @@ jobs:
   job2:
     runs-on: ubuntu-latest
     steps:
-      - run: cd ../../teleskope && ls -la
+      - run: cd ../../teleskope/teleskope && ls -la
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
