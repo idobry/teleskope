@@ -47,22 +47,19 @@ func serve() {
 	h := controller.NewHub()
 	go h.Run()
 
-	go controller.StreamDeployments(h)
-
 	r := mux.NewRouter()
 	corsObj:=handlers.AllowedOrigins([]string{"*"})
 	r.HandleFunc("/list/ns", func(w http.ResponseWriter, r *http.Request) {
 		controller.GetNamespaces(h, w, r)
-	})
-	r.HandleFunc("/list/dep/{ns}", func(w http.ResponseWriter, r *http.Request) {
-		controller.GetDeployments(h, w, r)
-	})
-	r.HandleFunc("/dep/{ns}/{dep}", func(w http.ResponseWriter, r *http.Request) {
-		controller.GetDeployment(h, w, r)
-	})
+	}).Methods("GET")
+	r.HandleFunc("/list3/dep/{ns}", controller.GetDeployments).Methods("GET")
+	r.HandleFunc("/dep/{ns}/{dep}", controller.GetDeployment).Methods("GET")
 	r.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		controller.StreamUpdateds(h, w, r)
 	})
+
+	go controller.StreamDeployments(h)
+
 	fmt.Println("ListenAndServe...")
 	err := http.ListenAndServe(":" + os.Getenv("PORT"), handlers.CORS(corsObj)(r))
 	if err != nil {
