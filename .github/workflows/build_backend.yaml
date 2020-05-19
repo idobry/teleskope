@@ -15,6 +15,7 @@ jobs:
       - name: build and push
         uses: docker/build-push-action@v1
         with:
+          ref: master
           username: ${{ secrets.IDO_DOCKER_USERNAME }}
           password: ${{ secrets.IDO_DOCKER_PASSWORD }}
           repository: idobry/teleskope_backend
