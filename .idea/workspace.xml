@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="05d0a875-87fa-4095-bb48-fea51d8b0e1a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.github/workflows/build_backend.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/build_backend.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
