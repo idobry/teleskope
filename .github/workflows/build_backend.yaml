@@ -8,7 +8,8 @@ jobs:
   job2:
     runs-on: ubuntu-latest
     steps:
-      - run: cd ../../.. && ls -la
+      - run: echo $GITHUB_WORKSPACE
+      - run: cd ../.. && ls -la
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
