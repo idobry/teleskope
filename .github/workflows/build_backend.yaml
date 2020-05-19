@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: ls -la $GITHUB_WORKSPACE
-      - run: cd ../../../work && ls -la
+      - run: cd ../../../work/teleskope && ls -la
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
