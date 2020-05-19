@@ -8,14 +8,21 @@ jobs:
   job2:
     runs-on: ubuntu-latest
     steps:
-      - run: ls -la ${GITHUB_WORKSPACE}
+    - name: build and push
+      uses: mr-smithers-excellent/docker-build-push@v3
+      with:
+        directory: backend
+        image: idobry/teleskope_backend
+        registry: docker.io
+        username: ${{ secrets.IDO_DOCKER_USERNAME }}
+        password: ${{ secrets.IDO_DOCKER_PASSWORD }}
+
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: build and push
         uses: docker/build-push-action@v1
         with:
-          ref: master
           username: ${{ secrets.IDO_DOCKER_USERNAME }}
           password: ${{ secrets.IDO_DOCKER_PASSWORD }}
           repository: idobry/teleskope_backend
