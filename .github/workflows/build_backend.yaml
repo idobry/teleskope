@@ -8,7 +8,7 @@ jobs:
   job2:
     runs-on: ubuntu-latest
     steps:
-      - run: pwd
+      - run: env
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
