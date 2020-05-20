@@ -10,10 +10,10 @@ WORKDIR /go/src/teleskope
 #WORKDIR /go/src/github.com/idobry/teleskope/backend/teleskope
 ADD . .
 RUN dep ensure
-#RUN CGO_ENABLED=0 GOOS=linux go build -a
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o teleskope .
+RUN CGO_ENABLED=0 GOOS=linux go build -a
+#RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o teleskope .
 
 FROM alpine:latest
 RUN apk --no-cache add ca-certificates
-COPY --from=builder /go/src/github.com/idobry/teleskope/backend/teleskope ./
+COPY --from=builder /go/src/teleskope ./
 CMD ["./teleskope run"]
