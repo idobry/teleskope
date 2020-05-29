@@ -1,3 +1,4 @@
+THIS REPO IS DEPRECATED, please refer to https://github.com/teleskopeView/teleskope_k8s
 # teleskope
  
 <img src="teleskope-gif.gif"/>
